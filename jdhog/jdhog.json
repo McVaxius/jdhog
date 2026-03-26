@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/goatcorp/Dalamud/master/Dalamud/Configuration/PluginManifest/pluginmanifest.schema.json",
+  "Author": "DhogGPT",
+  "Name": "Jabberdhoggy",
+  "Punchline": "Offline-first chatbot scaffold with per-account and per-character policy.",
+  "Description": "Offline-first chatbot scaffold with per-account and per-character policy.",
+  "InternalName": "jdhog",
+  "AssemblyVersion": "0.0.0.1",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 14,
+  "Tags": [
+    "ffxiv",
+    "jdhog",
+    "dhog"
+  ],
+  "CategoryTags": [
+    "utility"
+  ]
+}
