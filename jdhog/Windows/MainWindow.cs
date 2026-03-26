@@ -35,6 +35,8 @@ public sealed class MainWindow : Window, IDisposable
         ImGui.Text($"Account: {a?.AccountAlias ?? "(waiting for login)"}");
         ImGui.Text($"Character profile: {(string.IsNullOrWhiteSpace(plugin.ConfigManager.SelectedCharacterKey) ? "(Account default)" : plugin.ConfigManager.SelectedCharacterKey)}");
         ImGui.Text($"Profile enabled: {(c.Enabled ? "Yes" : "No")}");
+        ImGui.Text($"Allowed emotes: {c.AllowedEmotes.Count}");
+        ImGui.Text($"Allowed commands: {c.AllowedCommands.Count}");
         ImGui.TextWrapped($"Profile notes: {c.TargetNotes}");
         ImGui.Separator(); ImGui.TextUnformatted("Concept"); foreach (var x in PluginInfo.Concept) ImGui.BulletText(x);
         ImGui.Separator(); ImGui.TextUnformatted("Planned services"); foreach (var x in PluginInfo.Services) ImGui.BulletText(x);

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
@@ -7,7 +9,24 @@ namespace Jdhog.Windows;
 public sealed class ConfigWindow : Window, IDisposable
 {
     private static readonly string[] DtrModes = { "Text only", "Icon + text", "Icon only" };
+    private static readonly string[] SuggestedEmotes =
+    {
+        "/wave",
+        "/smile",
+        "/nod",
+        "/cheer",
+        "/clap",
+        "/thumbsup",
+        "/blush",
+        "/think",
+        "/doze",
+        "/dance",
+    };
+
     private readonly Plugin plugin;
+    private int selectedEmoteIndex;
+    private string customCommand = string.Empty;
+
     public ConfigWindow(Plugin plugin) : base($"{PluginInfo.DisplayName} Settings##Config")
     {
         this.plugin = plugin;
@@ -34,7 +53,71 @@ public sealed class ConfigWindow : Window, IDisposable
         var pcfg = plugin.ConfigManager.GetActiveConfig(); var pEnabled = pcfg.Enabled; if (ImGui.Checkbox("Profile enabled", ref pEnabled)) { pcfg.Enabled = pEnabled; plugin.ConfigManager.SaveCurrentAccount(); }
         var primaryMode = pcfg.PrimaryMode; if (ImGui.InputText("Primary mode", ref primaryMode, 128)) { pcfg.PrimaryMode = primaryMode; plugin.ConfigManager.SaveCurrentAccount(); }
         var notes = pcfg.TargetNotes; if (ImGui.InputTextMultiline("Target notes", ref notes, 1024, new Vector2(-1f,90f))) { pcfg.TargetNotes = notes; plugin.ConfigManager.SaveCurrentAccount(); }
+        ImGui.Separator();
+        ImGui.TextUnformatted("Allowed emotes");
+        ImGui.SetNextItemWidth(220f);
+        ImGui.Combo("##AllowedEmotePicker", ref selectedEmoteIndex, SuggestedEmotes, SuggestedEmotes.Length);
+        ImGui.SameLine();
+        if (ImGui.Button("Add emote"))
+        {
+            AddUniqueEntry(pcfg.AllowedEmotes, SuggestedEmotes[selectedEmoteIndex]);
+        }
+
+        DrawEditableList("AllowedEmotes", pcfg.AllowedEmotes);
+
+        ImGui.Spacing();
+        ImGui.TextUnformatted("Allowed manual commands");
+        ImGui.SetNextItemWidth(-110f);
+        if (ImGui.InputText("##AllowedCommandInput", ref customCommand, 256, ImGuiInputTextFlags.EnterReturnsTrue))
+        {
+            AddUniqueEntry(pcfg.AllowedCommands, customCommand);
+        }
+
+        ImGui.SameLine();
+        if (ImGui.Button("Add command"))
+        {
+            AddUniqueEntry(pcfg.AllowedCommands, customCommand);
+        }
+
+        DrawEditableList("AllowedCommands", pcfg.AllowedCommands);
         ImGui.Separator(); ImGui.TextUnformatted("Rollout phases"); foreach (var x in PluginInfo.Phases) ImGui.BulletText(x);
         ImGui.Spacing(); ImGui.TextUnformatted("Concept recap"); foreach (var x in PluginInfo.Concept) ImGui.BulletText(x);
+    }
+
+    private void AddUniqueEntry(List<string> entries, string value)
+    {
+        var trimmed = value.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed) || entries.Contains(trimmed, StringComparer.OrdinalIgnoreCase))
+            return;
+
+        entries.Add(trimmed);
+        customCommand = string.Empty;
+        plugin.ConfigManager.SaveCurrentAccount();
+    }
+
+    private void DrawEditableList(string id, List<string> entries)
+    {
+        if (entries.Count == 0)
+        {
+            ImGui.TextDisabled("None configured yet.");
+            return;
+        }
+
+        for (var i = 0; i < entries.Count; i++)
+        {
+            var entry = entries[i];
+            ImGui.PushID($"{id}_{i}");
+            if (ImGui.SmallButton("-"))
+            {
+                entries.RemoveAt(i);
+                plugin.ConfigManager.SaveCurrentAccount();
+                ImGui.PopID();
+                break;
+            }
+
+            ImGui.SameLine();
+            ImGui.TextUnformatted(entry);
+            ImGui.PopID();
+        }
     }
 }
