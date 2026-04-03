@@ -1,6 +1,6 @@
-# Jabberdhoggy
+# JabberDhog
 
-Dalamud plugin workspace for `Jabberdhoggy`.
+Dalamud plugin workspace for `JabberDhog`.
 
 ## Current Status
 
@@ -8,7 +8,7 @@ Bootstrap scaffold created on 2026-03-25. This repo now has a buildable `Debug x
 
 - Solution: `Z:\jdhog\jdhog.sln`
 - Project: `Z:\jdhog\jdhog\jdhog.csproj`
-- Command: `/jdhog`
+- Commands: `/jdhog` and `/jd`
 - Repository target: `Public`
 
 ## Plugin Concept

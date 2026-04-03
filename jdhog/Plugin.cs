@@ -25,6 +25,9 @@ public sealed class Plugin : IDalamudPlugin
 
     public Configuration Configuration { get; }
     public ConfigManager ConfigManager { get; }
+    public ConversationStateService ConversationStateService { get; }
+    public OutboundActionPolicy OutboundActionPolicy { get; }
+    public OfflineModelHost OfflineModelHost { get; }
     public WindowSystem WindowSystem { get; } = new(PluginInfo.InternalName);
     private readonly MainWindow mainWindow;
     private readonly ConfigWindow configWindow;
@@ -34,20 +37,24 @@ public sealed class Plugin : IDalamudPlugin
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         ConfigManager = new ConfigManager(PluginInterface, Log);
+        ConversationStateService = new ConversationStateService();
+        OutboundActionPolicy = new OutboundActionPolicy();
+        OfflineModelHost = new OfflineModelHost(Configuration, ConversationStateService, OutboundActionPolicy);
         if (!string.IsNullOrWhiteSpace(Configuration.LastAccountId)) ConfigManager.CurrentAccountId = Configuration.LastAccountId;
         ClientState.Login += OnLogin;
         mainWindow = new MainWindow(this);
         configWindow = new ConfigWindow(this);
         WindowSystem.AddWindow(mainWindow);
         WindowSystem.AddWindow(configWindow);
-        CommandManager.AddHandler(PluginInfo.Command, new CommandInfo(OnCommand) { HelpMessage = $"Open {PluginInfo.DisplayName}. Use {PluginInfo.Command} config for settings." });
+        CommandManager.AddHandler(PluginInfo.Command, new CommandInfo(OnCommand) { HelpMessage = $"Open {PluginInfo.DisplayName}. Use {PluginInfo.Command} or {PluginInfo.AliasCommand}, plus {PluginInfo.Command} config for settings." });
+        CommandManager.AddHandler(PluginInfo.AliasCommand, new CommandInfo(OnCommand) { HelpMessage = $"Alias for {PluginInfo.Command}." });
         PluginInterface.UiBuilder.Draw += WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
         Framework.Update += OnFrameworkUpdate;
         SetupDtrBar();
         UpdateDtrBar();
-        Log.Information("[Jabberdhoggy] Plugin loaded.");
+        Log.Information("[JabberDhog] Plugin loaded.");
     }
 
     public void Dispose()
@@ -57,9 +64,11 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUi;
+        CommandManager.RemoveHandler(PluginInfo.AliasCommand);
         CommandManager.RemoveHandler(PluginInfo.Command);
         WindowSystem.RemoveAllWindows();
         dtrEntry?.Remove();
+        OfflineModelHost.Dispose();
     }
 
     public void ToggleMainUi() => mainWindow.Toggle();

@@ -1,4 +1,4 @@
-# How To Import Jabberdhoggy
+# How To Import JabberDhog
 
 ## Dev Plugin Path
 
@@ -12,9 +12,9 @@
 4. Add `Z:\jdhog\jdhog\bin\x64\Debug\jdhog.dll` to `Dev Plugin Locations`.
 5. Open the plugin installer with `/xlplugins`.
 6. Go to `Dev Tools > Installed Dev Plugins`.
-7. Enable `Jabberdhoggy`.
+7. Enable `JabberDhog`.
 8. Run `/jdhog` in game to open the main window.
-9. Use `/jdhog config` if you want the settings window directly.
+9. Use `/jdhog config` or `/jd config` if you want the settings window directly.
 
 ## First Checks
 

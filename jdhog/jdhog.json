@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/goatcorp/Dalamud/master/Dalamud/Configuration/PluginManifest/pluginmanifest.schema.json",
   "Author": "DhogGPT",
-  "Name": "Jabberdhoggy",
+  "Name": "JabberDhog",
   "Punchline": "Offline-first chatbot scaffold with per-account and per-character policy.",
   "Description": "Offline-first chatbot scaffold with per-account and per-character policy.",
   "InternalName": "jdhog",
