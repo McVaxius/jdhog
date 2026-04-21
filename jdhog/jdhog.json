@@ -5,7 +5,7 @@
   "Punchline": "Offline-first chatbot scaffold with per-account and per-character policy.",
   "Description": "Offline-first chatbot scaffold with per-account and per-character policy.",
   "InternalName": "jdhog",
-  "AssemblyVersion": "0.0.0.1",
+  "AssemblyVersion": "0.0.0.2",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 14,
   "Tags": [
